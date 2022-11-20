@@ -154,13 +154,12 @@ def find_elements(text, found):
 def elements_to_text(elements):
     out = ""
     for e in elements:
-        out += str(list(pse.keys())[list(pse.values()).index(e)]) + " "
+        out += str(list(pse.keys())[list(pse.values()).index(str(e).title())])
     return out
 
 
 def console_run():
-    with open('element_words_dictionary.json') as f:
-        data = json.load(f)
+    data = load_data()
 
     while True:
         text = input("Enter text to find elements: ").lower()
@@ -170,42 +169,57 @@ def console_run():
             print("Found word in data: " + f)
         else:
             found = find_elements(text.lower(), [])
-            if len(text) == len(elements_to_text(found).replace(" ", "")) and len(found) > 0:
+            if len(text) == len(elements_to_text(found)) and len(found) > 0:
                 print("Found elements: " + " ".join(found))
                 if input("Would you like to save this word? (y/N) ") == "y":
                     data.update({text.lower(): " ".join(found)})
-                    with open('element_words_dictionary.json', 'w') as f:
-                        json.dump(data, f)
+                    save_data(data)
             else:
                 print("No elements found")
         print("")
 
 
-def add_if_not_in_dict(word, data):
-    if word not in data.keys():
-        found = find_elements(word, [])
-        if len(word) == len(elements_to_text(found).replace(" ", "")) and len(found) > 0:
-            data.update({word: " ".join(found)})
+def save_data(data, log=True):
+    if data != {}:
+        if log:
             print("Saving..", end="\r")
-            with open('element_words_dictionary.json', 'w') as f:
-                json.dump(data, f)
-            print("Saved word: " + word)
+        with open('element_words_dictionary.json', 'w', encoding="utf-8") as f:
+            json.dump(data, f)
+        if log:
+            print("Saved dict")
+
+
+def load_data():
+    with open('element_words_dictionary.json', 'r', encoding="utf-8") as f:
+        if f.read() == "" or f.read() == "{}":
+            data = {}
+        else:
+            f.read()
+            data = json.load(f)
+    return data
+
+
+def add_if_not_in_dict(word, data):
+    if word.lower() not in data.keys():
+        found = find_elements(word.lower(), [])
+        if len(word.lower()) == len(elements_to_text(found)) and len(found) > 0:
+            data.update({word.lower(): " ".join(found)})
 
 
 def run_through_txt_file(path, encoding="utf-8"):
-    with open('element_words_dictionary.json') as f:
-        data = json.load(f)
+    data = load_data()
 
     with open(path, encoding=encoding) as f:
-        words = f.readlines()
+        words = f.read().split("\n")
 
     for word in tqdm(words):
         add_if_not_in_dict(word.lower(), data)
 
+    save_data(data)
+
 
 def run_through_json_file_keys(path, encoding="utf-8"):
-    with open('element_words_dictionary.json') as f:
-        data = json.load(f)
+    data = load_data()
 
     with open(path, encoding=encoding) as f:
         words = json.load(f)
@@ -216,5 +230,3 @@ def run_through_json_file_keys(path, encoding="utf-8"):
 
 if __name__ == '__main__':
     console_run()
-
-
