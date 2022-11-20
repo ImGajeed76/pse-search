@@ -354,4 +354,4 @@ def run_through_json_file_keys(path, pse, dict_path='element_words_dictionary.js
 
 
 if __name__ == '__main__':
-    run_through_txt_file("english_words.txt", pse_german, "element_words_dictionary_german.json", "utf-8")
+    console_run(pse_german)
