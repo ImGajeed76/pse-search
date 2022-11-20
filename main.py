@@ -2,7 +2,7 @@ import json
 
 from tqdm import tqdm
 
-pse = {
+pse_english = {
     "H": "Hydrogen",
     "He": "Helium",
     "Li": "Lithium",
@@ -125,8 +125,131 @@ pse = {
     "Lr": "Lawrencium"
 }
 
+pse_german = {
+    "H": "Wasserstoff",
+    "He": "Helium",
+    "Li": "Lithium",
+    "Be": "Beryllium",
+    "B": "Bor",
+    "C": "Kohlenstoff",
+    "N": "Stickstoff",
+    "O": "Sauerstoff",
+    "F": "Fluor",
+    "Ne": "Neon",
+    "Na": "Natrium",
+    "Mg": "Magnesium",
+    "Al": "Aluminium",
+    "Si": "Silicium",
+    "P": "Phosphor",
+    "S": "Schwefel",
+    "Cl": "Chlor",
+    "Ar": "Argon",
+    "K": "Kalium",
+    "Ca": "Kalzium",
+    "Sc": "Scandium",
+    "Ti": "Titan",
+    "V": "Vanadium",
+    "Cr": "Chrom",
+    "Mn": "Mangan",
+    "Fe": "Eisen",
+    "Co": "Cobalt",
+    "Ni": "Nickel",
+    "Cu": "Kupfer",
+    "Zn": "Zink",
+    "Ga": "Gallium",
+    "Ge": "Germanium",
+    "As": "Arsen",
+    "Se": "Selen",
+    "Br": "Brom",
+    "Kr": "Krypton",
+    "Rb": "Rubidium",
+    "Sr": "Strontium",
+    "Y": "Yttrium",
+    "Zr": "Zirkonium",
+    "Nb": "Niob",
+    "Mo": "Molybdän",
+    "Tc": "Technetium",
+    "Ru": "Ruthenium",
+    "Rh": "Rhodium",
+    "Pd": "Palladium",
+    "Ag": "Silber",
+    "Cd": "Cadmium",
+    "In": "Indium",
+    "Sn": "Zinn",
+    "Sb": "Antimon",
+    "Te": "Tellur",
+    "I": "Jod",
+    "Xe": "Xenon",
+    "Cs": "Caesium",
+    "Ba": "Barium",
+    "La": "Lanthan",
+    "Hf": "Hafnium",
+    "Ta": "Tantal",
+    "W": "Wolfram",
+    "Re": "Rhenium",
+    "Os": "Osmium",
+    "Ir": "Iridium",
+    "Pt": "Platin",
+    "Au": "Gold",
+    "Hg": "Quecksilber",
+    "Tl": "Thallium",
+    "Pb": "Blei",
+    "Bi": "Bismut",
+    "Po": "Polonium",
+    "At": "Astat",
+    "Rn": "Radon",
+    "Fr": "Francium",
+    "Ra": "Radium",
+    "Ac": "Actinium",
+    "Rf": "Rutherfordium",
+    "Db": "Dubnium",
+    "Sg": "Seaborgium",
+    "Bh": "Bohrium",
+    "Hs": "Hassium",
+    "Mt": "Meitnerium",
+    "Ds": "Darmstadtium",
+    "Rg": "Roentgenium",
+    "Cn": "Copernicium",
+    "Nh": "Nihonium",
+    "Fl": "Flerovium",
+    "Mc": "Moscovium",
+    "Lv": "Livermorium",
+    "Ts": "Tennessine",
+    "Og": "Oganesson",
+    "La": "Lanthan",
+    "Ce": "Cer",
+    "Pr": "Praseodym",
+    "Nd": "Neodym",
+    "Pm": "Promethium",
+    "Sm": "Samarium",
+    "Eu": "Europium",
+    "Gd": "Gadolinium",
+    "Tb": "Terbium",
+    "Dy": "Dysprosium",
+    "Ho": "Holmium",
+    "Er": "Erbium",
+    "Tm": "Thulium",
+    "Yb": "Ytterbium",
+    "Lu": "Lutetium",
+    "Ac": "Actinium",
+    "Th": "Thorium",
+    "Pa": "Protactinium",
+    "U": "Uran",
+    "Np": "Neptunium",
+    "Pu": "Plutonium",
+    "Am": "Americium",
+    "Cm": "Curium",
+    "Bk": "Berkelium",
+    "Cf": "Californium",
+    "Es": "Einsteinium",
+    "Fm": "Fermium",
+    "Md": "Mendelevium",
+    "No": "Nobelium",
+    "Lr": "Lawrencium"
+}
 
-def find_elements(text, found):
+
+def find_elements(text, found, pse):
     if text == "":
         return found
     c1 = text[0]
@@ -134,7 +257,7 @@ def find_elements(text, found):
     for k, v in pse.items():
         if k.lower() == c1.lower():
             f1.append(v)
-            f1 = find_elements(text[1:], f1)
+            f1 = find_elements(text[1:], f1, pse)
 
     if len(text) < 1:
         return found
@@ -143,7 +266,7 @@ def find_elements(text, found):
     for k, v in pse.items():
         if k.lower() == c2.lower():
             f2.append(v)
-            f2 = find_elements(text[2:], f2)
+            f2 = find_elements(text[2:], f2, pse)
 
     if len(f1) > len(f2):
         return f1
@@ -151,15 +274,15 @@ def find_elements(text, found):
         return f2
 
 
-def elements_to_text(elements):
+def elements_to_text(elements, pse):
     out = ""
     for e in elements:
         out += str(list(pse.keys())[list(pse.values()).index(str(e).title())])
     return out
 
 
-def console_run():
-    data = load_data()
+def console_run(pse, dict_path='element_words_dictionary.json'):
+    data = load_data(dict_path)
 
     while True:
         text = input("Enter text to find elements: ").lower()
@@ -168,65 +291,67 @@ def console_run():
             f = str(data[text])
             print("Found word in data: " + f)
         else:
-            found = find_elements(text.lower(), [])
-            if len(text) == len(elements_to_text(found)) and len(found) > 0:
+            found = find_elements(text.lower(), [], pse)
+            if len(text) == len(elements_to_text(found, pse)) and len(found) > 0:
                 print("Found elements: " + " ".join(found))
                 if input("Would you like to save this word? (y/N) ") == "y":
                     data.update({text.lower(): " ".join(found)})
-                    save_data(data)
+                    save_data(data, dict_path)
             else:
                 print("No elements found")
         print("")
 
 
-def save_data(data, log=True):
+def save_data(data, path='element_words_dictionary.json', log=True):
     if data != {}:
         if log:
             print("Saving..", end="\r")
-        with open('element_words_dictionary.json', 'w', encoding="utf-8") as f:
+        with open(path, 'w', encoding="utf-8") as f:
             json.dump(data, f)
         if log:
             print("Saved dict")
 
 
-def load_data():
-    with open('element_words_dictionary.json', 'r', encoding="utf-8") as f:
+def load_data(path='element_words_dictionary.json'):
+    with open(path, 'r', encoding="utf-8") as f:
+        f.read()
         if f.read() == "" or f.read() == "{}":
             data = {}
         else:
-            f.read()
             data = json.load(f)
     return data
 
 
-def add_if_not_in_dict(word, data):
+def add_if_not_in_dict(word, data, pse):
     if word.lower() not in data.keys():
-        found = find_elements(word.lower(), [])
-        if len(word.lower()) == len(elements_to_text(found)) and len(found) > 0:
+        found = find_elements(word.lower(), [], pse)
+        if len(word.lower()) == len(elements_to_text(found, pse)) and len(found) > 0:
             data.update({word.lower(): " ".join(found)})
 
 
-def run_through_txt_file(path, encoding="utf-8"):
-    data = load_data()
+def run_through_txt_file(path, pse, dict_path='element_words_dictionary.json', encoding="utf-8"):
+    data = load_data(dict_path)
 
     with open(path, encoding=encoding) as f:
         words = f.read().split("\n")
 
     for word in tqdm(words):
-        add_if_not_in_dict(word.lower(), data)
+        add_if_not_in_dict(word.lower(), data, pse)
 
-    save_data(data)
+    save_data(data, dict_path)
 
 
-def run_through_json_file_keys(path, encoding="utf-8"):
-    data = load_data()
+def run_through_json_file_keys(path, pse, dict_path='element_words_dictionary.json', encoding="utf-8"):
+    data = load_data(dict_path)
 
     with open(path, encoding=encoding) as f:
         words = json.load(f)
 
     for word in tqdm(words.keys()):
-        add_if_not_in_dict(word.lower(), data)
+        add_if_not_in_dict(word.lower(), data, pse)
+
+    save_data(data, dict_path)
 
 
 if __name__ == '__main__':
-    console_run()
+    run_through_txt_file("english_words.txt", pse_german, "element_words_dictionary_german.json", "utf-8")
