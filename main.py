@@ -314,11 +314,11 @@ def save_data(data, path='element_words_dictionary.json', log=True):
 
 def load_data(path='element_words_dictionary.json'):
     with open(path, 'r', encoding="utf-8") as f:
-        f.read()
-        if f.read() == "" or f.read() == "{}":
+        txt = f.read()
+        if txt == "" or txt == "{}":
             data = {}
         else:
-            data = json.load(f)
+            data = json.loads(txt)
     return data
 
 
@@ -354,4 +354,4 @@ def run_through_json_file_keys(path, pse, dict_path='element_words_dictionary.js
 
 
 if __name__ == '__main__':
-    console_run(pse_german)
+    console_run(pse_german, 'element_words_dictionary_german.json')
